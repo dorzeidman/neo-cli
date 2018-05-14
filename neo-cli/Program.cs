@@ -21,7 +21,8 @@ namespace Neo
         static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            new MainService().Run(args);
+            ServiceFactory.Create(args).Run(args);
+            //new MainService().Run(args);
         }
 
         private static void PrintErrorLogs(StreamWriter writer, Exception ex)

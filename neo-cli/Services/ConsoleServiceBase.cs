@@ -31,7 +31,7 @@ namespace Neo.Services
             }
         }
 
-        protected internal abstract void OnStart(string[] args);
+        protected internal abstract bool OnStart(string[] args);
 
         protected internal abstract void OnStop();
 
@@ -102,12 +102,14 @@ namespace Neo.Services
 
         public void Run(string[] args)
         {
-            OnStart(args);
+            if (!OnStart(args))
+                return;
+
             RunConsole();
             OnStop();
         }
 
-        private void RunConsole()
+        protected virtual void RunConsole()
         {
             bool running = true;
 #if NET461

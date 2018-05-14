@@ -578,17 +578,25 @@ namespace Neo.Shell
                 return true;
             }
             string path = args[2];
+            string password = ReadPassword("password");
+            
+            OpenWalletCommand(password, password);
+            return true;
+        }
+
+        protected bool OpenWalletCommand(string path, string password)
+        {
             if (!File.Exists(path))
             {
                 Console.WriteLine($"File does not exist");
-                return true;
+                return false;
             }
-            string password = ReadPassword("password");
-            if (password.Length == 0)
+            if (string.IsNullOrEmpty(password))
             {
                 Console.WriteLine("cancelled");
-                return true;
+                return false;
             }
+
             if (Path.GetExtension(path) == ".db3")
             {
                 try
@@ -598,7 +606,7 @@ namespace Neo.Shell
                 catch (CryptographicException)
                 {
                     Console.WriteLine($"failed to open file \"{path}\"");
-                    return true;
+                    return false;
                 }
             }
             else
@@ -611,7 +619,7 @@ namespace Neo.Shell
                 catch (CryptographicException)
                 {
                     Console.WriteLine($"failed to open file \"{path}\"");
-                    return true;
+                    return false;
                 }
                 Program.Wallet = nep6wallet;
             }
@@ -841,7 +849,7 @@ namespace Neo.Shell
             return true;
         }
 
-        protected internal override void OnStart(string[] args)
+        protected internal override bool OnStart(string[] args)
         {
             bool useRPC = false, nopeers = false, useLog = false;
             for (int i = 0; i < args.Length; i++)
@@ -860,6 +868,13 @@ namespace Neo.Shell
                         useLog = true;
                         break;
                 }
+
+            OnStart(useRPC, nopeers, useLog);
+            return true;
+        }
+
+        protected void OnStart(bool useRPC = false, bool nopeers = false, bool useLog = false, int? rpcPort = null)
+        {
             Blockchain.RegisterBlockchain(new LevelDBBlockchain(Path.GetFullPath(Settings.Default.Paths.Chain)));
             if (!nopeers && File.Exists(PeerStatePath))
                 using (FileStream fs = new FileStream(PeerStatePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -919,7 +934,7 @@ namespace Neo.Shell
                 if (useRPC)
                 {
                     rpc = new RpcServerWithWallet(LocalNode);
-                    rpc.Start(Settings.Default.RPC.Port, Settings.Default.RPC.SslCert, Settings.Default.RPC.SslCertPassword);
+                    rpc.Start(rpcPort ?? Settings.Default.RPC.Port, Settings.Default.RPC.SslCert, Settings.Default.RPC.SslCertPassword);
                 }
             });
         }
