@@ -7,9 +7,9 @@ namespace Neo.Shell
         public static ConsoleServiceBase Create(string[] args)
         {
             ConsoleServiceBase service = null;
-
-            if(args.Length > 2 &&
-                (args[1] == "/rpc-service" || args[1] == "--rpc-service" || args[1] == "-rpc-service"))
+            
+            if(args.Length >= 1 &&
+                (args[0] == "/rpc-service" || args[0] == "--rpc-service" || args[0] == "-rpc-service"))
             {
                 service = new RPCOnlyService();
             }
