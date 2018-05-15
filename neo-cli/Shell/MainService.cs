@@ -873,7 +873,7 @@ namespace Neo.Shell
             return true;
         }
 
-        protected void OnStart(bool useRPC = false, bool nopeers = false, bool useLog = false, int? rpcPort = null)
+        protected void OnStart(bool useRPC = false, bool nopeers = false, bool useLog = false)
         {
             Blockchain.RegisterBlockchain(new LevelDBBlockchain(Path.GetFullPath(Settings.Default.Paths.Chain)));
             if (!nopeers && File.Exists(PeerStatePath))
@@ -934,7 +934,7 @@ namespace Neo.Shell
                 if (useRPC)
                 {
                     rpc = new RpcServerWithWallet(LocalNode);
-                    rpc.Start(rpcPort ?? Settings.Default.RPC.Port, Settings.Default.RPC.SslCert, Settings.Default.RPC.SslCertPassword);
+                    rpc.Start(Settings.Default.RPC.Port, Settings.Default.RPC.SslCert, Settings.Default.RPC.SslCertPassword);
                 }
             });
         }

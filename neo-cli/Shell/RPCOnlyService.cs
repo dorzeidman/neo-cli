@@ -10,22 +10,27 @@ namespace Neo.Shell
 
         protected internal override bool OnStart(string[] args)
         {
-            if(!ParseArgs(args, out string path, out string password, out int? rpcPort))
+            if(!ParseArgs(args, out string path, out string password))
             {
                 Console.WriteLine("Service stopping");
                 return false;
             }
             
-            OnStart(useRPC: true, rpcPort: rpcPort);
+            OnStart(useRPC: true);
 
-            if(!OpenWalletCommand(path, password))
+            if (!string.IsNullOrEmpty(path))
             {
-                Console.WriteLine("Open Wallet Failed. Service stopping");
-                OnStop();
-                return false;
+                if (!OpenWalletCommand(path, password))
+                {
+                    Console.WriteLine("Open Wallet Failed. Service stopping");
+                    OnStop();
+                    return false;
+                }
+                else
+                    Console.WriteLine("Wallet is open!");
             }
 
-            Console.WriteLine($"{ServiceName} Service Started!. RPC Port:{rpcPort ?? Settings.Default.RPC.Port}");
+            Console.WriteLine($"{ServiceName} Service Started!. RPC Port:{Settings.Default.RPC.Port}");
 
             return true;
         }
@@ -51,28 +56,41 @@ namespace Neo.Shell
             _keepRunning = false;
         }
 
-        private bool ParseArgs(string[] args, out string path, out string password, out int? rpcPort)
+        private bool ParseArgs(string[] args, out string path, out string password)
         {
             path = null;
             password = null;
-            rpcPort = null;
 
-            if (args.Length < 3)
+            for (int i = 0; i < args.Length; i++)
             {
-                Console.WriteLine("Error: Args missing. e.g: --rpc-service /var/wallet.json pass1234 8080");
-                return false;
-            }
-
-            path = args[1];
-            password = args[2];
-
-            if(args.Length >= 4)
-            {
-                if(int.TryParse(args[3], out int rpcPortTemp))
+                switch (args[i])
                 {
-                    rpcPort = rpcPortTemp;
+                    case "--wallet-path":
+                    case "/wallet-path":
+                    case "-wallet-path":
+                        if (args.Length > i + 1)
+                            path = args[i + 1];
+                        break;
+                    case "--wallet-password":
+                    case "/wallet-password":
+                    case "-wallet-password":
+                        if (args.Length > i + 1)
+                            password = args[i + 1];
+                        break;
+                    case "--rpc-port":
+                    case "/rpc-port":
+                    case "-rpc-port":
+                        if (args.Length > i + 1)
+                        {
+                            if (ushort.TryParse(args[3], out ushort rpcPort))
+                            {
+                                Settings.Default.RPC.Port = rpcPort;
+                            }
+                        }
+                        break;
                 }
             }
+
             return true;
         }
     }

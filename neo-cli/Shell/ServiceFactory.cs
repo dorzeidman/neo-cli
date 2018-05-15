@@ -1,4 +1,5 @@
 ﻿using Neo.Services;
+using System.Linq;
 
 namespace Neo.Shell
 {
@@ -8,8 +9,7 @@ namespace Neo.Shell
         {
             ConsoleServiceBase service = null;
             
-            if(args.Length >= 1 &&
-                (args[0] == "/rpc-service" || args[0] == "--rpc-service" || args[0] == "-rpc-service"))
+            if(args.Any(x => x == "/rpc-service" || x == "--rpc-service" || x == "-rpc-service"))
             {
                 service = new RPCOnlyService();
             }

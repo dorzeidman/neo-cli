@@ -51,7 +51,7 @@ namespace Neo
 
     internal class RPCSettings
     {
-        public ushort Port { get; }
+        public ushort Port { get; set; }
         public string SslCert { get; }
         public string SslCertPassword { get; }
 
