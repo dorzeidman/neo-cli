@@ -21,6 +21,7 @@ namespace Neo.Shell
             if(!OpenWalletCommand(path, password))
             {
                 Console.WriteLine("Open Wallet Failed. Service stopping");
+                OnStop();
                 return false;
             }
 
