@@ -10,11 +10,7 @@ namespace Neo.Shell
 
         protected internal override bool OnStart(string[] args)
         {
-            if(!ParseArgs(args, out string path, out string password))
-            {
-                Console.WriteLine("Service stopping");
-                return false;
-            }
+            ParseArgs(args, out string path, out string password);
             
             OnStart(useRPC: true);
 
@@ -56,7 +52,7 @@ namespace Neo.Shell
             _keepRunning = false;
         }
 
-        private bool ParseArgs(string[] args, out string path, out string password)
+        private void ParseArgs(string[] args, out string path, out string password)
         {
             path = null;
             password = null;
@@ -82,7 +78,7 @@ namespace Neo.Shell
                     case "-rpc-port":
                         if (args.Length > i + 1)
                         {
-                            if (ushort.TryParse(args[3], out ushort rpcPort))
+                            if (ushort.TryParse(args[i + 1], out ushort rpcPort))
                             {
                                 Settings.Default.RPC.Port = rpcPort;
                             }
@@ -90,8 +86,6 @@ namespace Neo.Shell
                         break;
                 }
             }
-
-            return true;
         }
     }
 }
