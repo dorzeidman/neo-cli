@@ -25,7 +25,15 @@ namespace Neo.Shell
                 return false;
             }
 
+            Console.WriteLine($"{ServiceName} Service Started!");
+
             return true;
+        }
+
+        protected internal override void OnStop()
+        {
+            base.OnStop();
+            Console.WriteLine($"{ServiceName} Service Stopped!");
         }
 
         protected override void RunConsole()
