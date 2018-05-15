@@ -25,7 +25,7 @@ namespace Neo.Shell
                 return false;
             }
 
-            Console.WriteLine($"{ServiceName} Service Started!");
+            Console.WriteLine($"{ServiceName} Service Started!. RPC Port:{rpcPort ?? Settings.Default.RPC.Port}");
 
             return true;
         }
