@@ -616,9 +616,9 @@ namespace Neo.Shell
                 {
                     nep6wallet.Unlock(password);
                 }
-                catch (CryptographicException)
+                catch (CryptographicException ex)
                 {
-                    Console.WriteLine($"failed to open file \"{path}\"");
+                    Console.WriteLine($"failed to open file \"{path}\". Exception:{ex.Message}");
                     return false;
                 }
                 Program.Wallet = nep6wallet;
