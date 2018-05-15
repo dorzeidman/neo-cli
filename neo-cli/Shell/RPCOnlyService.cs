@@ -10,13 +10,13 @@ namespace Neo.Shell
 
         protected internal override bool OnStart(string[] args)
         {
-            ParseArgs(args, out string path, out string password);
+            ParseArgs(args);
             
             OnStart(useRPC: true);
 
-            if (!string.IsNullOrEmpty(path))
+            if (!string.IsNullOrEmpty(Settings.Default.Wallet.Path))
             {
-                if (!OpenWalletCommand(path, password))
+                if (!OpenWalletCommand(Settings.Default.Wallet.Path, Settings.Default.Wallet.Password))
                 {
                     Console.WriteLine("Open Wallet Failed. Service stopping");
                     OnStop();
@@ -52,27 +52,12 @@ namespace Neo.Shell
             _keepRunning = false;
         }
 
-        private void ParseArgs(string[] args, out string path, out string password)
+        private void ParseArgs(string[] args)
         {
-            path = null;
-            password = null;
-
             for (int i = 0; i < args.Length; i++)
             {
                 switch (args[i])
                 {
-                    case "--wallet-path":
-                    case "/wallet-path":
-                    case "-wallet-path":
-                        if (args.Length > i + 1)
-                            path = args[i + 1];
-                        break;
-                    case "--wallet-password":
-                    case "/wallet-password":
-                    case "-wallet-password":
-                        if (args.Length > i + 1)
-                            password = args[i + 1];
-                        break;
                     case "--rpc-port":
                     case "/rpc-port":
                     case "-rpc-port":

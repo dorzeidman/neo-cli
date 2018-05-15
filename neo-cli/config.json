@@ -12,6 +12,10 @@
       "Port": 10332,
       "SslCert": "",
       "SslCertPassword": ""
+    },
+    "Wallet": {
+      "Path": "",
+      "Password": ""
     }
   }
 }

@@ -232,6 +232,8 @@ namespace Neo.Network.RPC
                         result["tx"] = tx?.ToArray().ToHexString();
                     }
                     return result;
+                case "remotenodes":
+                    return LocalNode.RemoteNodeCount.ToString();
                 default:
                     return base.Process(method, _params);
             }
