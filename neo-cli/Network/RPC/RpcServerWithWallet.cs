@@ -232,8 +232,21 @@ namespace Neo.Network.RPC
                         result["tx"] = tx?.ToArray().ToHexString();
                     }
                     return result;
-                case "remotenodes":
-                    return LocalNode.RemoteNodeCount.ToString();
+                case "state":
+                    var state = new JObject
+                    {
+                        ["WalletHeight"] = 0,
+                        ["LocalBlockHeight"] = Blockchain.Default.Height,
+                        ["RemoteBlockHeight"] = Blockchain.Default.HeaderHeight,
+                        ["RemoteNodes"] = LocalNode.RemoteNodeCount
+                    };
+                    
+                    if (Program.Wallet != null)
+                    {
+                        state["WalletHeight"] = (Program.Wallet.WalletHeight > 0) ? Program.Wallet.WalletHeight - 1 : 0;
+                    }
+
+                    return state;
                 default:
                     return base.Process(method, _params);
             }
